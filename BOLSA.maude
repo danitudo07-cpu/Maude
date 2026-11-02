@@ -1,0 +1,231 @@
+**************** NOMBRE *******************
+   fmod NATURAL is
+***************** CONJUNTOS ****************
+   protecting BOOL .
+   sort N .
+   sort NoN .
+   subsort NoN < N .
+***************** SINTAXIS *****************
+   op cero : -> N .
+   op sucesor : N -> N .
+   op suma : N N -> N .
+   op esCero : N -> Bool .
+   op esIgual : N N -> Bool .
+   op esDistinto : N N -> Bool .
+   op producto : N N -> N .
+   op potencia : N N -> N .
+   op cuadrado : N -> N .
+   op factorial : N -> N .
+   op predecesor : N -> N .
+   op resta : N N -> N .
+   op diferencia : N N -> N .
+   op difUno : N N -> Bool .
+   op esMenor : N N -> Bool .
+   op esMenorIgual : N N -> Bool .
+   op esMayor : N N -> Bool .
+   op esMayorIgual : N N -> Bool .
+   op maximo : N N -> N .
+   op minimo : N N -> N .
+   op division : N N -> N .
+   op modulo : N N -> N .
+   op mitad : N -> N .
+   op esPar : N -> Bool .
+   op logaritmo : N -> N .
+   op raiz : N -> N .
+   op raiz : N N -> N .
+   op raizAux : N N N -> N .
+
+   op mcm : N N -> N .
+   op mcd : N N -> N .
+   op coprimos : N N -> Bool .
+
+   op NODEFINIDO : -> NoN .
+   op INFINITO : -> NoN .
+   op NEGATIVO : -> NoN .
+***************** SEMANTICA ****************
+   var n m k : N .
+   eq suma(cero, n) = n .
+   eq suma(sucesor(m), n) = sucesor(suma(m, n)) .
+   eq esCero(cero) = true .
+   eq esCero(sucesor(n)) = false .
+   eq esIgual(cero, n) = esCero(n) .
+   eq esIgual(sucesor(n), cero) = false .
+   eq esIgual(sucesor(n), sucesor(m)) = esIgual(n, m) .
+   eq esDistinto(n, m) = not esIgual(n, m) .
+   eq producto(n, cero) = cero .
+   eq producto(cero, n) = cero .
+   eq producto(sucesor(n), m) = suma(m, producto(n, m)) .
+   eq potencia(cero, cero) = NODEFINIDO .
+   eq potencia(cero, n) = cero .
+   eq potencia(sucesor(n), cero) = sucesor(cero) .
+   eq potencia(sucesor(n), sucesor(m)) = producto(sucesor(n), potencia(sucesor(n), m)) .
+   eq cuadrado(cero) = cero .
+   eq cuadrado(sucesor(n)) = producto(sucesor(n), sucesor(n)) .
+   eq factorial(cero) = sucesor(cero) .
+   eq factorial(sucesor(n)) = producto(sucesor(n), factorial(n)) .
+
+   eq predecesor(cero) = NEGATIVO .
+   eq predecesor(sucesor(n)) = n .
+
+   eq resta(n, cero) = n .
+   eq resta(cero, sucesor(n)) = NEGATIVO .
+   eq resta(n, sucesor(n)) = NEGATIVO .
+   eq resta(n, m) = resta(predecesor(n) ,predecesor(m)) .
+
+   eq diferencia(n, cero) = n .
+   eq diferencia(cero ,n) = n .
+   eq diferencia(sucesor(n), sucesor(m)) = diferencia(n, m) .
+
+   eq difUno(n, cero) = esIgual(n, cero) or esIgual(n, sucesor(cero)) .
+   eq difUno(cero, n) = esIgual(n, cero) or esIgual(n, sucesor(cero)) .
+   eq difUno(n, m) = difUno(predecesor(n), predecesor(m)) .
+
+   eq esMenor(n, cero) = false .
+   eq esMenor(cero, n) = not esCero(n) .
+   eq esMenor(sucesor(n), m) = esMenor(n, predecesor(m)) .
+
+   eq esMenorIgual(n, cero) = esCero(n) .
+   eq esMenorIgual(cero, n) = true .
+   eq esMenorIgual(sucesor(n), m) = esMenor(n, predecesor(m)) or esIgual(n, predecesor(m)) .
+   
+   eq esMayor(n, cero) = not esCero(n) .
+   eq esMayor(cero, n) = false .
+   eq esMayor(sucesor(n), m) = not esMenorIgual(n, predecesor(m)) .
+
+   eq esMayorIgual(n, cero) = true .
+   eq esMayorIgual(cero, n) = esCero(n) .
+   eq esMayorIgual(sucesor(n), m) = not esMenor(n, predecesor(m)) .
+   
+   eq maximo(cero, n) = n .
+   eq maximo(n, cero) = n . 
+   eq maximo(sucesor(n), m) = sucesor(maximo(n, predecesor(m))) .
+
+   eq minimo(cero, n) = cero .
+   eq minimo(n, cero) = cero .
+   eq minimo(sucesor(n), m) = sucesor(minimo(n, predecesor(m))) .
+
+   eq division(cero, cero) = NODEFINIDO .
+   eq division(n, cero) = INFINITO .
+   eq division(cero, n) = cero .
+   eq division(n, sucesor(m)) = if esMenor(n, sucesor(m)) then cero else sucesor(division(resta(n,sucesor(m)), sucesor(m))) fi .
+
+   eq modulo(n, cero) = NODEFINIDO .
+   eq modulo(cero, n) = cero .
+   eq modulo(n, sucesor(m)) = if esMenor(n, sucesor(m)) then n else resta(n, producto(sucesor(m), division(n, sucesor(m)))) fi .
+
+   eq mitad(cero) = cero .
+   eq mitad(sucesor(n)) = division(sucesor(n), sucesor(sucesor(cero))) .
+
+   eq esPar(cero) = true .
+   eq esPar(sucesor(n)) = esCero(modulo(sucesor(n), sucesor(sucesor(cero)))) .
+
+   eq logaritmo(cero) = INFINITO .
+   eq logaritmo(sucesor(cero)) = cero .
+   eq logaritmo(sucesor(sucesor(n))) = sucesor(logaritmo(division(sucesor(sucesor(n)), sucesor(sucesor(cero))))) .
+
+   eq raiz(n) = raizAux(sucesor(sucesor(cero)), n, cero) .
+
+   eq raiz(cero, m) = NODEFINIDO .
+   eq raiz(sucesor(n), m) = raizAux(sucesor(n), m, cero) .
+   eq raizAux(n, m, k) = if esMenor(m, potencia(sucesor(k), n)) then k else raizAux(n, m, sucesor(k)) fi .
+
+   eq mcm(n, cero) = cero .
+   eq mcm(cero, n) = cero .
+   eq mcm(n, sucesor(m)) = producto(n, division(sucesor(m), mcd(n, sucesor(m)))) .
+
+   eq mcd(n, cero) = n .
+   eq mcd(cero, n) = n .
+   eq mcd(n, sucesor(m)) = if esCero(modulo(n, sucesor(m))) then sucesor(m) else mcd(sucesor(m), modulo(n, sucesor(m))) fi .
+
+   eq coprimos(n, cero) = false .
+   eq coprimos(cero, n) = false .
+   eq coprimos(n, sucesor(m)) = esIgual(mcd(n, sucesor(m)), sucesor(cero)) .
+
+
+   
+   endfm
+
+
+
+
+
+fmod VOCAL is
+
+
+   protecting BOOL .
+   sort V .
+
+
+   ops A E I O U : -> V .
+   op esIgualV : V V -> Bool .
+   op esDistinta : V V -> Bool .
+   op esMenor : V V -> Bool .
+
+
+   var v w : V .
+
+   eq esIgualV(v, v) = true .
+   eq esIgualV(v, w) = false .
+   eq esDistinta(v, w) = not esIgualV(v, w) .
+   eq esMenor(v,v) = false .
+   eq esMenor(A,w) = true .
+   eq esMenor(U,w) = false .
+   eq esMenor(E, w) = esDistinta(w,A) .
+   eq esMenor(I, w) = esMenor(E, w) and esDistinta(w, E) .
+   eq esMenor(O, w) = esMenor(I, w) and esDistinta(w, I) .
+
+endfm
+
+fmod BOLSA is
+    protecting BOOL .
+    protecting VOCAL .
+    protecting NATURAL .
+    sort B .
+    
+
+    op bolsaVacia : -> B .
+    op esVacia : B -> Bool .
+    op insertar : V B -> B .
+    op contar : V B -> N .
+    op eliminar : V B -> B .
+
+    op union : B B -> B .
+    op interseccion : B B -> B .
+    op diferencia : B B -> B .
+    op esIgual : B B -> Bool .
+
+    var v w : V .
+    var b l : B .
+    var n : N .
+
+    eq esVacia(bolsaVacia) = true .
+    eq esVacia(insertar(v, b)) = false .
+    
+    eq contar(v, bolsaVacia) = cero .
+    eq contar(v, insertar(v, b)) = sucesor(contar(v, b)) .
+    eq contar(v, insertar(w, b)) = contar(v, b) .
+
+    eq eliminar(v, bolsaVacia) = bolsaVacia .
+    eq eliminar(v, insertar(v, b)) = b .
+    eq eliminar(v, insertar(w, b)) = insertar(w, eliminar(v, b)) .
+
+    eq union(bolsaVacia, b) = b .
+    eq union(b, bolsaVacia) = b .
+    eq union(insertar(v, b), l) = insertar(v, union(b, l)) .
+
+    eq interseccion(bolsaVacia, b) = bolsaVacia .
+    eq interseccion(b, bolsaVacia) = bolsaVacia .
+    eq interseccion(insertar(v, b), l) = if esMayor(contar(v, l), cero) then insertar(v, interseccion(b, eliminar(v, l))) else interseccion(b, l) fi .
+
+    eq diferencia(bolsaVacia, b) = bolsaVacia .
+    eq diferencia(b, bolsaVacia) = b .
+    eq diferencia(insertar(v, b), l) = if esMayor(contar(v, l), cero) then diferencia(b, eliminar(v, l)) else insertar(v, diferencia(b, l)) fi .
+
+    eq esIgual(b, l) = esVacia(diferencia(b, l)) and esVacia(diferencia(l, b)) .
+
+
+
+
+
+
+    endfm
